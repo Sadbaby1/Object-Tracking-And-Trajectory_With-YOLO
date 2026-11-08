@@ -51,7 +51,7 @@ def main():
                     font_thickness=FONT_THICKNESS
                 )
 
-                
+        # Update trajectory history for each track ID        
         # Display the frame
         cv.imshow("Trajectory tracking", frame)
         if cv.waitKey(1) & 0xFF == ord('q'):
