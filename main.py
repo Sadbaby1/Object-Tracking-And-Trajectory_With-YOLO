@@ -12,6 +12,7 @@ BOX_THICKNESS = 2
 FONT_SCALE = 0.5
 LINE_THICKNESS = 3
 FONT_THICKNESS = 2
+TRAJECTORY_LENGTH = 100  # Number of points to keep in the trajectory history
 
 # Load YOLO model
 model = YOLO(MODEL_PATH)
@@ -24,7 +25,7 @@ def main():
     print("Video opened successfully.")
 
     # Dictionary storing trajectory history: track_id -> deque of center points
-    trajectory_history = defaultdict(lambda: deque(maxlen=30))
+    trajectory_history = defaultdict(lambda: deque(maxlen=TRAJECTORY_LENGTH))
 
     while True:
         ret, frame = cap.read()
@@ -50,8 +51,16 @@ def main():
                     font_scale=FONT_SCALE,
                     font_thickness=FONT_THICKNESS
                 )
+                
+                # Store trajectory history for each track ID
+                trajectory_history[track_id].append((cx, cy))
 
-        # Update trajectory history for each track ID        
+                # Draw trajectory line for each track ID
+                points = trajectory_history[track_id]
+                if len(points) > 1:
+                    for j in range(1, len(points)):
+                        cv.line(frame, points[j - 1], points[j], color, LINE_THICKNESS)  
+                      
         # Display the frame
         cv.imshow("Trajectory tracking", frame)
         if cv.waitKey(1) & 0xFF == ord('q'):
@@ -59,7 +68,6 @@ def main():
 
     cap.release()
     cv.destroyAllWindows()
-
 
 if __name__ == "__main__":
     main()
