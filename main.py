@@ -6,10 +6,12 @@ import random
 from collections import deque
 from utils import openVideo
 
-video_path = "01.mp4"
+video_path = "02.mp4"
 
 def main():
     cap = openVideo(video_path)
+    if cap is None:
+        return
     print("Video opened successfully.")
     while True:
         ret, frame = cap.read()
@@ -23,6 +25,8 @@ def main():
         cv.imshow("Video", frame)
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
-
+    
+    cap.release()
+    cv.destroyAllWindows()
 if __name__ == "__main__":
     main()
