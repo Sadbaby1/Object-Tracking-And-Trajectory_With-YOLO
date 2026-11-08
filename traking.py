@@ -1,3 +1,4 @@
+import cv2 as cv
 from collections import defaultdict, deque
 TRAJECTORY_LENGTH = 100
 #dictionary for Trajectory history

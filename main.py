@@ -5,6 +5,7 @@ from ultralytics import YOLO
 from collections import defaultdict, deque
 from utils import openVideo
 from detection import detect_and_track, draw_bounding_box
+from traking import trajectory_history, draw_trajectory
 
 VIDEO_PATH = "02.mp4"
 MODEL_PATH = "yolo26n.pt"
@@ -25,7 +26,7 @@ def main():
     print("Video opened successfully.")
 
     # Dictionary storing trajectory history: track_id -> deque of center points
-    trajectory_history = defaultdict(lambda: deque(maxlen=TRAJECTORY_LENGTH))
+    #trajectory_history = defaultdict(lambda: deque(maxlen=TRAJECTORY_LENGTH))
 
     while True:
         ret, frame = cap.read()
@@ -55,11 +56,8 @@ def main():
                 # Store trajectory history for each track ID
                 trajectory_history[track_id].append((cx, cy))
 
-                # Draw trajectory line for each track ID
-                points = trajectory_history[track_id]
-                if len(points) > 1:
-                    for j in range(1, len(points)):
-                        cv.line(frame, points[j - 1], points[j], color, LINE_THICKNESS)  
+                # Draw trajectory trail
+                draw_trajectory(frame, trajectory_history[track_id], color, LINE_THICKNESS)
                       
         # Display the frame
         cv.imshow("Trajectory tracking", frame)
